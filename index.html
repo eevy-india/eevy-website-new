@@ -457,6 +457,11 @@
       if (!res.ok) throw new Error(await res.text());
       form.reset();
       show('ok', 'Thanks! Your enquiry has been received. Our team will contact you shortly.');
+      oaiq(
+        "measure",
+        "registration_completed",
+        { type: "customer_action" }
+      );
     } catch (err) {
       console.error(err);
       show('err', 'Something went wrong sending your enquiry. Please try again in a moment.');
