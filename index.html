@@ -104,6 +104,7 @@
   .loc small{color:var(--muted);font-size:14px}
 
   form.card{padding:32px}
+  .form-lang{display:flex;justify-content:flex-end;margin:-8px 0 12px}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
   label{font-size:13.5px;color:var(--muted);font-weight:500}
@@ -293,6 +294,9 @@
       </aside>
 
       <form id="leadForm" class="card" novalidate>
+        <div class="form-lang">
+          <button class="lang-toggle" id="formLangToggle" type="button" aria-label="Switch selected text to Tamil" aria-pressed="false">த</button>
+        </div>
         <div class="row">
           <div class="field"><label for="name"><span data-i18n="nameLabel">Your name</span> <span class="req">*</span></label><input id="name" name="name" required autocomplete="name"></div>
           <div class="field"><label for="phone"><span data-i18n="phoneLabel">Phone</span> <span class="req">*</span></label><input id="phone" name="phone" type="tel" required inputmode="tel" pattern="^[+0-9 \-]{10,15}$" autocomplete="tel" placeholder="+91"></div>
@@ -388,6 +392,23 @@
     });
     document.getElementById('langToggle').setAttribute('aria-label', tamilMode ? 'Switch selected text to English' : 'Switch selected text to Tamil');
   });
+  (() => {
+    const navBtn = document.getElementById('langToggle');
+    const formBtn = document.getElementById('formLangToggle');
+    if (!navBtn || !formBtn) return;
+
+    // Clicking the form button runs the existing nav toggle logic
+    formBtn.addEventListener('click', () => navBtn.click());
+
+    // Mirror the nav button's label/state so both stay in sync
+    const sync = () => {
+      formBtn.textContent = navBtn.textContent;
+      formBtn.setAttribute('aria-pressed', navBtn.getAttribute('aria-pressed'));
+      formBtn.setAttribute('aria-label', navBtn.getAttribute('aria-label'));
+    };
+    new MutationObserver(sync).observe(navBtn, { childList: true, characterData: true, subtree: true, attributes: true, attributeFilter: ['aria-pressed', 'aria-label'] });
+    sync();
+  })();
 
   document.getElementById('yr').textContent = new Date().getFullYear();
 
